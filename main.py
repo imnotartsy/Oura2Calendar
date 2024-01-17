@@ -13,7 +13,7 @@ from googleapiclient.errors import HttpError
 
 # * Control Vars + Config
 HISTORY_MODE = False            # Get all events from historic_start
-historic_start = "2022-12-20"
+historic_start = "2023-01-14"
 CLEAR = False                   # Clear calendar before adding events
 
 
@@ -23,7 +23,15 @@ DEBUG = False
 
 
 if HISTORY_MODE:
-    range_start = historic_start = "2022-12-20"
+    range_start = historic_start
+    # if historic_start is more than 250 days ago, then duplicates will be added
+    if (datetime.today() - datetime.fromisoformat(historic_start)).days > 250:
+        print("WARNING: historic_start is more than 250 days ago, then duplicates will be added")
+        print("Press enter to continue...")
+        check = input()
+        if check != "":
+            exit(0)
+    
 else: # CRON MODE
     today = datetime.today()
     yesterday = today - timedelta(days=1)
